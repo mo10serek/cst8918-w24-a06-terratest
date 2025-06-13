@@ -6,7 +6,7 @@ import (
 	"github.com/gruntwork-io/terratest/modules/azure"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
-	//"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/require"
 )
 
 // You normally want to run this under a separate "Testing" subscription
@@ -19,7 +19,7 @@ func TestAzureLinuxVMCreation(t *testing.T) {
 		TerraformDir: "../",
 		// Override the default terraform variables
 		Vars: map[string]interface{}{
-			"labelPrefix": "<your-college-id>",
+			"labelPrefix": "mo10serek",
 		},
 	}
 
@@ -46,7 +46,7 @@ func TestAzureLinuxVMCreation(t *testing.T) {
 //}
 
 // GetVirtualMachineNicsE checks if the VM runs the correct Ubuntu version.
-/*func GetVirtualMachineNicsE(vmName string, resGroupName string, subscriptionID string) ([]string, error) {
+func GetVirtualMachineNicsE(vmName string, resGroupName string, subscriptionID string) ([]string, error) {
 
 	// Get VM Object
 	vm, err := azure.GetVirtualMachineE(vmName, resGroupName, subscriptionID)
@@ -81,4 +81,4 @@ func ComfirmIfVMRunningAndCorrectUbuntu(t *testing.T, vmName string, resGroupNam
     require.Equal(t, "18.04-LTS", *vm.StorageProfile.ImageReference.Sku) // Adjust as needed
 
 	return nil, err
-}*/
+}

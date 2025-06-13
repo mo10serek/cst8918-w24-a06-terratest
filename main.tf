@@ -1,12 +1,12 @@
 # Define the resource group
 resource "azurerm_resource_group" "rg" {
-  name     = "mo10serek-A05-RG"
+  name     = "${var.labelPrefix}-A05-RG"
   location = var.region
 }
 
 # Define a public IP address
 resource "azurerm_public_ip" "webserver" {
-  name                = "mo10serekA05PublicIP"
+  name                = "${var.labelPrefix}A05PublicIP"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Dynamic"
@@ -14,7 +14,7 @@ resource "azurerm_public_ip" "webserver" {
 
 # Define the virtual network
 resource "azurerm_virtual_network" "vnet" {
-  name                = "mo10serekA05Vnet"
+  name                = "${var.labelPrefix}A05Vnet"
   address_space       = ["10.0.0.0/16"]
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
@@ -23,7 +23,7 @@ resource "azurerm_virtual_network" "vnet" {
 
 # Define the subnet
 resource "azurerm_subnet" "webserver" {
-  name                 = "mo10serekA05Subnet"
+  name                 = "${var.labelPrefix}A05Subnet"
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = ["10.0.1.0/24"]
@@ -31,7 +31,7 @@ resource "azurerm_subnet" "webserver" {
 
 # Define network security group and rules
 resource "azurerm_network_security_group" "webserver" {
-  name                = "mo10serekA05SG" # mckennrA05SG
+  name                = "${var.labelPrefix}A05SG" # mckennrA05SG
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
@@ -62,12 +62,12 @@ resource "azurerm_network_security_group" "webserver" {
 
 # Define the network interface
 resource "azurerm_network_interface" "webserver" {
-  name                = "mo10serekA05Nic"
+  name                = "${var.labelPrefix}A05Nic"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
   ip_configuration {
-    name                          = "mo10serekA05NicConfig"
+    name                          = "${var.labelPrefix}A05NicConfig"
     subnet_id                     = azurerm_subnet.webserver.id
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.webserver.id
@@ -100,14 +100,14 @@ data "cloudinit_config" "init" {
 
 # Define the virtual machine
 resource "azurerm_linux_virtual_machine" "webserver" {
-  name                  = "mo10serekA05VM"
+  name                  = "${var.labelPrefix}A05VM"
   resource_group_name   = azurerm_resource_group.rg.name
   location              = azurerm_resource_group.rg.location
   network_interface_ids = [azurerm_network_interface.webserver.id]
   size                  = "Standard_B1s"
 
   os_disk {
-    name                 = "mo10serekA05OSDisk"
+    name                 = "${var.labelPrefix}A05OSDisk"
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
   }
@@ -119,7 +119,7 @@ resource "azurerm_linux_virtual_machine" "webserver" {
     version   = "latest"
   }
 
-  computer_name                   = "mo10serekA05VM"
+  computer_name                   = "${var.labelPrefix}A05VM"
   admin_username                  = var.admin_username
   disable_password_authentication = true
 
